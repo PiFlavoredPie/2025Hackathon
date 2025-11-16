@@ -7,6 +7,7 @@ import time
 import threading
 from PyQt6.QtGui import QPixmap, QColor
 import backend.input as inputting
+import backend.applications.weather as weather
 
 imgFileBase = "static//images//"
 
@@ -146,7 +147,7 @@ class Ui_MainWindow(object):
         # Chatbot Input (Text Entry Box)
         self.chatbotEnter = QtWidgets.QLineEdit(parent=self.centralwidget)
         self.chatbotEnter.setGeometry(QtCore.QRect(self.xAd(10), self.yAd(230), self.xAd(271), self.yAd(29)))
-        self.chatbotEnter.setStyleSheet("background-color: rgb(200,200,200)")
+        self.chatbotEnter.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166); ")
         self.chatbotEnter.setObjectName("chatbotEnter")
         self.chatbotEnter.editingFinished.connect(self.enterPress)
         font = QtGui.QFont()
@@ -168,7 +169,24 @@ class Ui_MainWindow(object):
         # Set fixed size for the text box to make it non-resizable
         self.chattext_box.setFixedSize(self.xAd(281), self.yAd(91))  # Width = 811px, Height = 531px
 
-        
+
+
+        # Fixed Chat Text Box (Read-only, Multi-line)
+        self.weather_box = QtWidgets.QTextEdit(parent=self.centralwidget)
+        #self.chattext_box.setGeometry(QtCore.QRect(40, 500, 811, 531))  # Adjust position and size
+        self.weather_box.setPlaceholderText("weather box")
+        self.weather_box.setReadOnly(True)  # Make it read-only so the user can't modify the text
+        #self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
+        self.weather_box.setObjectName("weather_box")
+        self.weather_box.setGeometry(QtCore.QRect(self.xAd(330), self.yAd(160), self.xAd(50), self.yAd(50)))  # Adjust position as needed
+        self.weather_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
+        #self.plainTextEdit.setObjectName("plainTextEdit")
+        # Set fixed size for the text box to make it non-resizable
+        self.weather_box.setFixedSize(self.xAd(125), self.yAd(75))  # Width = 811px, Height = 531px
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.weather_box.setFont(font)
+
         
         # Push Button 1 (Action Button) with animations
         self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
@@ -393,7 +411,25 @@ class Ui_MainWindow(object):
             self.timer.start(100)  # Restart the timer to resume animation
 
     
-        
+def weather_update_weather(self, city_name):
+    """Update the weather box with weather information for the given city."""
+    # Get weather data (weather description and temperature)
+    weather_description = weather.get_weather(city_name)
+    #temp = weather_description[1]
+    # If we successfully got weather data, update the weather box
+    try:
+        weatherd = weather_description["weather"][0]["description"]
+        temp = weather_description["main"]["temp"]
+    except:
+        weatherd = None
+        temp = None
+    if weather_description and temp is not None:
+        weather_info = f"Weather in {city_name}: {weatherd} and a temperature of {temp}°C"
+        self.weather_box.setText(weather_info)
+    else:
+        # If something went wrong, display an error message
+        self.weather_box.setText(f"Could not retrieve weather for {city_name}. Please try again.") 
+      
 
 def main():
     app = QApplication([])
@@ -402,6 +438,8 @@ def main():
     
     ui.setupUi(MainWindow)
     ui.setup_animation(MainWindow)
+    weather_update_weather(ui, "Troy, New York")  # Example city name; replace with desired city
+
     #MainWindow.setWindowTitle("Chatbot Interface")
     #window = Ui_MainWindow()
     MainWindow.setGeometry(0, 0, 480, 320)
