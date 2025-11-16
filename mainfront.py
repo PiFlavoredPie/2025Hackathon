@@ -1,6 +1,8 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QLabel, QFrame, QMenuBar, QStatusBar, QMainWindow
-from PyQt6.QtCore import QRect, QSize, Qt, QCoreApplication,QThread, pyqtSignal, QTimer,QPushButton, QLineEdit
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QLabel, QFrame, QPushButton, QMenuBar, QStatusBar, QMainWindow
+from PyQt6.QtCore import QRect, QSize, Qt, QCoreApplication,QThread, pyqtSignal, QTime
+from PyQt6.QtCore import QTimer
 import time
 import threading
 from PyQt6.QtGui import QPixmap
@@ -45,64 +47,94 @@ class FlashingLightsWorker(QThread):
         self.update_signal.emit(state_text)
 
 
-class mainWin(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setObjectName("MainWindow")
-        self.resize(1464, 1146)
-        self.setStyleSheet("background-color: rgb(0, 0, 0)")
+
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1464, 1146)
+        MainWindow.setStyleSheet("background-color: rgb(0, 0, 0)")
 
         # Central Widget
-        self.centralwidget = QWidget(parent=self)
+        self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-        # Line 2
-        self.line_2 = QFrame(parent=self.centralwidget)
-        self.line_2.setGeometry(QRect(710, 0, 31, 1101))
+        # Line 2 (Vertical Line Divider)
+        self.line_2 = QtWidgets.QFrame(parent=self.centralwidget)
+        self.line_2.setGeometry(QtCore.QRect(710, 0, 31, 1101))
         self.line_2.setStyleSheet("color: rgb(255,255,255)")
         self.line_2.setLineWidth(10)
         self.line_2.setMidLineWidth(10)
-        self.line_2.setFrameShape(QFrame.Shape.VLine)
-        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+        self.line_2.setFrameShape(QtWidgets.QFrame.Shape.VLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_2.setObjectName("line_2")
 
-        # Chatbot Input
-        self.chatbotEnter = QLineEdit(parent=self.centralwidget)
-        self.chatbotEnter.setGeometry(QRect(40, 1040, 631, 29))
-        self.chatbotEnter.setStyleSheet("background-color: rgb(200,200,200)")
-        self.chatbotEnter.setObjectName("chatbotEnter")
-        self.chatbotEnter.editingFinished.connect(self.enterPress,"chatbotEnter")
-        
-        # Label
-        self.label = QLabel(parent=self.centralwidget)
-        self.label.setGeometry(QRect(290, 940, 171, 51))
+        # Label above Chat Input
+        self.label = QtWidgets.QLabel(parent=self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(290, 940, 171, 51))  # Adjust position as needed
         self.label.setStyleSheet("color: rgb(160, 255, 166); font-size: 20px")
         self.label.setObjectName("label")
 
-        # Set up menu bar and status bar
-        self.menubar = QMenuBar(parent=self)
-        self.menubar.setGeometry(QRect(0, 0, 1464, 30))
-        self.setMenuBar(self.menubar)
+        # Chatbot Input (Text Entry Box)
+        self.chatbotEnter = QtWidgets.QLineEdit(parent=self.centralwidget)
+        self.chatbotEnter.setGeometry(QtCore.QRect(40, 1040, 631, 29))  # Adjust position as needed
+        self.chatbotEnter.setStyleSheet("background-color: rgb(200,200,200)")
+        self.chatbotEnter.setObjectName("chatbotEnter")
+        self.chatbotEnter.editingFinished.connect(self.enterPress)
 
-        self.statusbar = QStatusBar(parent=self)
-        self.setStatusBar(self.statusbar)
-        #self.setup_animation()
-        
-        # Create a QLineEdit (fixed text box)
-        self.chattext_box = QLineEdit(self)
+        # Fixed Chat Text Box (Read-only)
+        self.chattext_box = QtWidgets.QLineEdit(parent=self.centralwidget)
+        self.chattext_box.setGeometry(QtCore.QRect(40, 390, 811, 531))  # Adjust position as needed
         self.chattext_box.setPlaceholderText("This is a fixed text box (user can't edit).")
         self.chattext_box.setReadOnly(True)  # Make it read-only so the user can't modify the text
-        self.mainLay.addWidget(self.chattext_box)
-        
-        # Layout (example: QVBoxLayout for centralwidget)
-        self.mainLay = QVBoxLayout(self.centralwidget)
-        self.centralwidget.setLayout(self.mainLay)
-    
-        self.setCentralWidget(self.centralwidget)
-        
-        # Retranslate UI
-        self.retranslateUi()
+        self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
+        self.chattext_box.setObjectName("chattext_box")
 
+        # Plain Text Edit (User Editable Area)
+        self.plainTextEdit = QtWidgets.QPlainTextEdit(parent=self.centralwidget)
+        self.plainTextEdit.setGeometry(QtCore.QRect(30, 390, 811, 531))  # Adjust position as needed
+        self.plainTextEdit.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
+        self.plainTextEdit.setObjectName("plainTextEdit")
+
+        # Push Button 1 (Action Button)
+        self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(1040, 30, 261, 41))  # Adjust position as needed
+        self.pushButton.setAutoFillBackground(False)
+        self.pushButton.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);"
+                                      "border-radius: 5px; padding: 5px 10px;")
+        self.pushButton.setObjectName("pushButton")
+
+        # Push Button 2 (Another Action Button)
+        self.pushButton_2 = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(1040, 130, 261, 41))  # Adjust position as needed
+        self.pushButton_2.setAutoFillBackground(False)
+        self.pushButton_2.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);"
+                                        "border-radius: 5px; padding: 5px 10px;")
+        self.pushButton_2.setObjectName("pushButton_2")
+
+        # Menu Bar Setup
+        self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1464, 30))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+
+        # Status Bar Setup
+        self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        # Finalizing Setup
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+        """  def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label.setText(_translate("MainWindow", "SPEAK TO ME:"))
+        self.pushButton.setText(_translate("MainWindow", "Initiate Strategic Illumination"))
+        self.pushButton_2.setText(_translate("MainWindow", "Initiate Radio Control"))
+"""
 
     #external GPIO control setup
     def setup_external_control(self):
@@ -146,17 +178,20 @@ class mainWin(QMainWindow):
 
 
 
-    def retranslateUi(self):
+    def retranslateUi(self, MainWindow):
         _translate = QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        #Main.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "SPEAK TO ME"))
 
         self.setup_window()
+
+        self.image_label = QLabel(self)
+        self.layout.addWidget(self.image_label)
         self.setup_animation()
         
     def setup_window(self):
         """Setup the main window and layout."""
-        self.setWindowTitle("Image Animation Example")
+        #self.setWindowTitle("Image Animation Example")
         self.setGeometry(100, 100, 600, 400)
         
         # Create central widget and layout
@@ -167,9 +202,8 @@ class mainWin(QMainWindow):
         
     def setup_animation(self):
         # QLabel to display images
-        self.image_label = QLabel(self)
-        self.layout.addWidget(self.image_label)
-        self.setCentralWidget(self.centralwidget)
+        
+        #self.setCentralWidget(self.centralwidget)
         """Setup the image animation functionality."""
          # List of image paths for the animation
         self.talkimagePaths = [
@@ -201,9 +235,12 @@ class mainWin(QMainWindow):
 
 def main():
     app = QApplication([])
-
-    window = mainWin()
-    window.show()
+    MainWindow = QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    #MainWindow.setWindowTitle("Chatbot Interface")
+    #window = Ui_MainWindow()
+    MainWindow.show()
 
     sys.exit(app.exec())
 
