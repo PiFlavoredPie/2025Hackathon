@@ -9,14 +9,13 @@ from PyQt6.QtGui import QPixmap, QColor
 
 imgFileBase = "static/images/"
 
-openTalk = "faceOpen.png"
-smileClosed = "faceSmile.png"
-sad = "sad.png"
-superHappy = "superHappy.png"
-supersad = "superSad.png"
-surprised = "surprise.png"
-angry = "faceAngry.png"
-
+openTalk = imgFileBase +"faceOpen.png"
+smileClosed = imgFileBase + "faceSmile.png"
+sad = imgFileBase +"sad.png"
+superHappy = imgFileBase + "superHappy.png"
+supersad = imgFileBase + "superSad.png"
+surprised = imgFileBase + "surprise.png"
+angry = imgFileBase + "faceAngry.png"
 
 class MockHardwareAPI:
     def toggle_lights(self):
@@ -28,6 +27,7 @@ class FlashingLightsWorker(QThread):
 
     def __init__(self, hardware_api):
         super().__init__()
+        
         #self.hardware_api = hardware_api
         self.hardware_api = MockHardwareAPI()
         #self.setup_external_control() #commented to avoid crash
@@ -79,25 +79,38 @@ class FlashingLightsWorker(QThread):
             return super().eventFilter(obj, event)
 
 class Ui_MainWindow(object):
+    ScreenWidth = 480
+    ScreenHeight = 320
+    designedScreenWidth = 1464
+    designedScreenHeight = 1146
+
+    def xAd(self, x):
+        return int(x * self.ScreenWidth / self.designedScreenWidth)
+
+    def yAd(self,y):
+        return int(y * self.ScreenHeight / self.designedScreenHeight)
+    def __init__(self):
+        self.animation_runs = 0  # Counter to track the number of runs
+        self.max_animation_runs = 3  # Maximum number of times the animation will run
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1464, 1146)
+        MainWindow.resize(self.xAd(1464), self.yAd(1146))
         MainWindow.setStyleSheet("background-color: rgb(0, 0, 0)")
         # Central Widget
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         
         self.image_label = QLabel(self.centralwidget)
-        self.image_label.setGeometry(QtCore.QRect(40, 40, 300, 300))  # Set the geometry for placement and size
+        self.image_label.setGeometry(QtCore.QRect(self.xAd(40), self.yAd(40), self.xAd(300), self.yAd(300)))  # Set the geometry for placement and size
         self.image_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)  # Center align the image
         self.image_label.setObjectName("image_label")
         
         self.image_label = QLabel(self.centralwidget)
-        self.image_label.setGeometry(QtCore.QRect(40, 40, 300, 300))
+        self.image_label.setGeometry(QtCore.QRect(self.xAd(40), self.yAd(40), self.xAd(500), self.yAd(500)))
 
         # Line 2 (Vertical Line Divider)
         self.line_2 = QtWidgets.QFrame(parent=self.centralwidget)
-        self.line_2.setGeometry(QtCore.QRect(870, 0, 31, 1101))
+        self.line_2.setGeometry(QtCore.QRect(self.xAd(870), self.yAd(0), self.xAd(31), self.yAd(1101)))
         self.line_2.setStyleSheet("color: rgb(255,255,255)")
         self.line_2.setLineWidth(10)
         self.line_2.setMidLineWidth(10)
@@ -107,37 +120,37 @@ class Ui_MainWindow(object):
 
         # Label above Chat Input
         self.label = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(290, 940, 171, 51))  # Adjust position as needed
+        self.label.setGeometry(QtCore.QRect(self.xAd(290), self.yAd(940), self.xAd(171), self.yAd(51)))  # Adjust position as needed
         self.label.setStyleSheet("color: rgb(160, 255, 166); font-size: 20px")
         self.label.setObjectName("label")
 
         # Chatbot Input (Text Entry Box)
         self.chatbotEnter = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.chatbotEnter.setGeometry(QtCore.QRect(40, 1040, 631, 29))  # Adjust position as needed
+        self.chatbotEnter.setGeometry(QtCore.QRect(self.xAd(40), self.yAd(1040), self.xAd(631), self.yAd(29)))  # Adjust position as needed
         self.chatbotEnter.setStyleSheet("background-color: rgb(200,200,200)")
         self.chatbotEnter.setObjectName("chatbotEnter")
         self.chatbotEnter.editingFinished.connect(self.enterPress)
 
         # Fixed Chat Text Box (Read-only, Multi-line)
         self.chattext_box = QtWidgets.QTextEdit(parent=self.centralwidget)
-        #self.chattext_box.setGeometry(QtCore.QRect(40, 390, 811, 531))  # Adjust position and size
+        #self.chattext_box.setGeometry(QtCore.QRect(40, 500, 811, 531))  # Adjust position and size
         self.chattext_box.setPlaceholderText("This is a fixed text box (user can't edit).")
         self.chattext_box.setReadOnly(True)  # Make it read-only so the user can't modify the text
         #self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
         self.chattext_box.setObjectName("chattext_box")
-        self.chattext_box.setGeometry(QtCore.QRect(30, 390, 811, 531))  # Adjust position as needed
+        self.chattext_box.setGeometry(QtCore.QRect(self.xAd(30), self.yAd(500), self.xAd(811), self.yAd(531)))  # Adjust position as needed
         self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
         #self.plainTextEdit.setObjectName("plainTextEdit")
 
 
         # Set fixed size for the text box to make it non-resizable
-        self.chattext_box.setFixedSize(811, 531)  # Width = 811px, Height = 531px
+        self.chattext_box.setFixedSize(self.xAd(811), self.yAd(531))  # Width = 811px, Height = 531px
 
         
         
         # Push Button 1 (Action Button) with animations
         self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(1040, 30, 261, 41))  # Adjust position as needed
+        self.pushButton.setGeometry(QtCore.QRect(self.xAd(1040), self.yAd(30), self.xAd(261), self.yAd(41)))  # Adjust position as needed
         self.pushButton.setAutoFillBackground(False)
         self.pushButton.setStyleSheet("""
             QPushButton {
@@ -169,7 +182,7 @@ class Ui_MainWindow(object):
 
         # Push Button 2 (Another Action Button)
         self.pushButton_2 = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(1040, 130, 261, 41))  # Adjust position as needed
+        self.pushButton_2.setGeometry(QtCore.QRect(self.xAd(1040), self.yAd(130), self.xAd(261), self.yAd(41)))  # Adjust position as needed
         self.pushButton_2.setAutoFillBackground(False)
         self.pushButton_2.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);"
                                         "border-radius: 5px; padding: 5px 10px;")
@@ -177,7 +190,7 @@ class Ui_MainWindow(object):
 
         # Menu Bar Setup
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1464, 30))
+        self.menubar.setGeometry(QtCore.QRect(self.xAd(0), self.yAd(0), self.xAd(1464), self.yAd(30)))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
 
@@ -185,6 +198,8 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
+        
 
         # Finalizing Setup
         MainWindow.setCentralWidget(self.centralwidget)
@@ -261,6 +276,7 @@ class Ui_MainWindow(object):
         
         # Set the response text into the chattext_box
         self.chattext_box.setText(response)
+        self.restartAnimation()
    
     
 
@@ -270,12 +286,8 @@ class Ui_MainWindow(object):
         
         
         
-    def setup_animation(self):
+    def setup_animation(self, parent):
         # QLabel to display images
-        
-        #self.setCentralWidget(self.centralwidget)
-        """Setup the image animation functionality."""
-         # List of image paths for the animation
         self.talkimagePaths = [
             smileClosed,
             openTalk,
@@ -287,8 +299,8 @@ class Ui_MainWindow(object):
         
         self.current_frame = 0  # To track the current image frame
         
-        # Create a QTimer to update the image
-        self.timer = QTimer(self)
+        # Create a QTimer and pass the parent (MainWindow) here
+        self.timer = QTimer(parent)
         self.timer.timeout.connect(self.update_image)
         self.timer.start(100)  # Update every 100 milliseconds
 
@@ -296,6 +308,9 @@ class Ui_MainWindow(object):
         """Update the image on the QLabel."""
         try:
             pixmap = QPixmap(self.talkimagePaths[self.current_frame])
+            
+            pixmap = pixmap.scaled(self.xAd(500), self.yAd(500), QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+            
             if not pixmap.isNull():  # Check if the image was loaded successfully
                 self.image_label.setPixmap(pixmap)
             else:
@@ -305,13 +320,55 @@ class Ui_MainWindow(object):
         
         # Update to the next image
         self.current_frame += 1
+
+        # If we've completed a full cycle (reached the end of the image array)
         if self.current_frame >= len(self.talkimagePaths):
             self.current_frame = 0  # Loop back to the first image
+            self.animation_runs += 1  # Increment animation run after a full cycle
+
+        # Check if the animation has run the desired number of times
+        if self.animation_runs >= self.max_animation_runs:
+            self.timer.stop()  # Stop the animation
+            self.end_animation()  # Call function for the ending state
+
+    def end_animation(self):
+        """Function to run after animation finishes."""
+        print("Animation completed 3 times. Switching to rest state.")
+        # Here, you can set the final image or run any other code for the "rest state"
+        # For example, set a final image as the rest state
+        final_pixmap = QPixmap(angry)  # Replace with actual path
+        self.image_label.setPixmap(final_pixmap)
+        """Reset animation if needed (for example, if you want to restart it)."""
+        """Resets the animation so it can be restarted."""
+        print("Resetting animation...")
+
+        # Stop the timer (if running)
+        if self.timer is not None and self.timer.isActive():
+            self.timer.stop()
+
+        # Reset animation variables
+        self.animation_runs = 0
+        self.current_frame = 0
+        
+
+    def restartAnimation(self):
+        """Function to restart the animation."""
+        print("Restarting animation...")
+        self.animation_runs = 0
+        self.current_frame = 0
+        if self.timer is not None:
+            self.timer.start(100)  # Restart the timer to resume animation
+
+    
+        
+
 def main():
     app = QApplication([])
     MainWindow = QMainWindow()
     ui = Ui_MainWindow()
+    
     ui.setupUi(MainWindow)
+    ui.setup_animation(MainWindow)
     #MainWindow.setWindowTitle("Chatbot Interface")
     #window = Ui_MainWindow()
     MainWindow.setGeometry(100, 100, 600, 400)
@@ -322,3 +379,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

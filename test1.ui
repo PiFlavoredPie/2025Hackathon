@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1464</width>
-    <height>1146</height>
+    <width>480</width>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -144,7 +144,7 @@ padding: 5px 10px;           /* Optional: internal padding */</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1464</width>
+     <width>480</width>
      <height>30</height>
     </rect>
    </property>
