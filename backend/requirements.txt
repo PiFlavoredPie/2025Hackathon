@@ -1,0 +1,4 @@
+Pyside6
+Openai
+requests
+

@@ -6,8 +6,9 @@ from PyQt6.QtCore import QTimer, QPropertyAnimation, QRect, QEasingCurve
 import time
 import threading
 from PyQt6.QtGui import QPixmap, QColor
+import backend.input as inputting
 
-imgFileBase = "static/images/"
+imgFileBase = "static//images//"
 
 openTalk = imgFileBase +"faceOpen.png"
 smileClosed = imgFileBase + "faceSmile.png"
@@ -79,6 +80,8 @@ class FlashingLightsWorker(QThread):
             return super().eventFilter(obj, event)
 
 class Ui_MainWindow(object):
+    emo = "Happy"
+    emotionsStore = {"Happy":smileClosed, "VeryHappy":superHappy, "Sad":sad, "VerySad":supersad, "Angry":angry, "Surprised":surprised}
     ScreenWidth = 480
     ScreenHeight = 320
     designedScreenWidth = 480
@@ -265,7 +268,8 @@ class Ui_MainWindow(object):
 
 
     def chatresponse(self, entered_text):
-        response = f"Echo: {entered_text}"
+        response = inputting.user_prompt(entered_text)
+
         return response
 
     def external_update_text(self, new_text):
@@ -286,10 +290,15 @@ class Ui_MainWindow(object):
 
         # Generate a response from the entered text (you could call a different function here)
         response = self.chatresponse(entered_text)
+        textresponse = response[0]
+        emot = response[1]
+        print(f"Chatbot emotion: {emot}")
+        print(f"Chatbot response: {response}")
         
         # Set the response text into the chattext_box
-        self.chattext_box.setText(response)
+        self.chattext_box.setText(textresponse)
         self.restartAnimation()
+        self.emo = emot
    
     
 
@@ -349,8 +358,15 @@ class Ui_MainWindow(object):
         print("Animation completed 3 times. Switching to rest state.")
         # Here, you can set the final image or run any other code for the "rest state"
         # For example, set a final image as the rest state
-        
-        pixmap = QPixmap(angry)
+        emot = self.emo
+        print("Detected int emotion:", emot)
+        try:
+            pixmap = QPixmap(self.emotionsStore[emot])
+            print("mapping success")
+        except:
+            pixmap = QPixmap(smileClosed)  # Default image if emotion not found
+            print("mapping error")
+        print("detected final emotion:", emot,"with image:", self.emotionsStore[emot])
         pixmap = pixmap.scaled(self.xAd(75), self.yAd(75), QtCore.Qt.AspectRatioMode.KeepAspectRatio)
         
         final_pixmap = QPixmap(pixmap)  # Replace with actual path
