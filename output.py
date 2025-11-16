@@ -12,12 +12,12 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1464, 1146)
+        MainWindow.resize(480, 320)
         MainWindow.setStyleSheet("background-color: rgb(0, 0, 0)")
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.line_2 = QtWidgets.QFrame(parent=self.centralwidget)
-        self.line_2.setGeometry(QtCore.QRect(710, 0, 31, 1101))
+        self.line_2.setGeometry(QtCore.QRect(290, -20, 31, 1101))
         self.line_2.setStyleSheet("color: rgb(255,255,255)")
         self.line_2.setLineWidth(10)
         self.line_2.setMidLineWidth(10)
@@ -25,19 +25,58 @@ class Ui_MainWindow(object):
         self.line_2.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
         self.line_2.setObjectName("line_2")
         self.chatbotEnter = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.chatbotEnter.setGeometry(QtCore.QRect(40, 1040, 631, 29))
+        self.chatbotEnter.setGeometry(QtCore.QRect(10, 230, 271, 29))
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.chatbotEnter.setFont(font)
         self.chatbotEnter.setStyleSheet("background-color: rgb(200,200,200)")
         self.chatbotEnter.setObjectName("chatbotEnter")
         self.label = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(290, 940, 171, 51))
+        self.label.setGeometry(QtCore.QRect(100, 190, 111, 31))
         self.label.setSizeIncrement(QtCore.QSize(0, 0))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
         self.label.setStyleSheet("color: rgb(160, 255, 166);\n"
-"text-size: 200px")
+"text-size: 2px")
         self.label.setTextFormat(QtCore.Qt.TextFormat.PlainText)
         self.label.setObjectName("label")
+        self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(320, 10, 151, 61))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton.setFont(font)
+        self.pushButton.setAutoFillBackground(False)
+        self.pushButton.setStyleSheet("color: rgb(160, 255, 166);\n"
+"border: 2px solid rgb(160, 255, 166);  /* 2px thick black border */\n"
+"border-radius: 5px;          /* Optional: rounded corners */\n"
+"padding: 5px 10px;           /* Optional: internal padding */")
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(parent=self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(310, 90, 161, 41))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_2.setFont(font)
+        self.pushButton_2.setAutoFillBackground(False)
+        self.pushButton_2.setStyleSheet("color: rgb(160, 255, 166);\n"
+"border: 2px solid rgb(160, 255, 166);  /* 2px thick black border */\n"
+"border-radius: 5px;          /* Optional: rounded corners */\n"
+"padding: 5px 10px;           /* Optional: internal padding */")
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.plainTextEdit = QtWidgets.QPlainTextEdit(parent=self.centralwidget)
+        self.plainTextEdit.setGeometry(QtCore.QRect(10, 100, 281, 91))
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.plainTextEdit.setFont(font)
+        self.plainTextEdit.setStyleSheet("color: rgb(160, 255, 166);\n"
+"border: 2px solid rgb(160, 255, 166);  /* 2px thick black border */\n"
+"border-radius: 5px;          /* Optional: rounded corners */\n"
+"padding: 5px 10px;           /* Optional: internal padding */\n"
+"text-size:2px")
+        self.plainTextEdit.setObjectName("plainTextEdit")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1464, 30))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 480, 30))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
@@ -50,4 +89,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "SPEAK TO ME"))
+        self.label.setText(_translate("MainWindow", "SPEAK TO ME:"))
+        self.pushButton.setText(_translate("MainWindow", "Initiate Strategic \n"
+" Illumination"))
+        self.pushButton_2.setText(_translate("MainWindow", "Execute Order 66"))

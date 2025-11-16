@@ -81,8 +81,8 @@ class FlashingLightsWorker(QThread):
 class Ui_MainWindow(object):
     ScreenWidth = 480
     ScreenHeight = 320
-    designedScreenWidth = 1464
-    designedScreenHeight = 1146
+    designedScreenWidth = 480
+    designedScreenHeight = 320
 
     def xAd(self, x):
         return int(x * self.ScreenWidth / self.designedScreenWidth)
@@ -92,25 +92,41 @@ class Ui_MainWindow(object):
     def __init__(self):
         self.animation_runs = 0  # Counter to track the number of runs
         self.max_animation_runs = 3  # Maximum number of times the animation will run
+    
+    def button_2_pressed(self):
+        # Add whatever logic you want to run when the button is pressed
+        print("Button 2 was pressed!")
+        # You can also call other functions here
+        self.some_other_function()
+
+    def button_1_pressed(self):
+        # Add whatever logic you want to run when the button is pressed
+        print("Button 2 was pressed!")
+        # You can also call other functions here
+        self.some_other_function()
+
+    def some_other_function(self):
+        print("Executing another function after button 2 press!")
+    
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(self.xAd(1464), self.yAd(1146))
+        MainWindow.resize(self.xAd(self.ScreenWidth), self.yAd(self.ScreenHeight))
         MainWindow.setStyleSheet("background-color: rgb(0, 0, 0)")
         # Central Widget
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         
         self.image_label = QLabel(self.centralwidget)
-        self.image_label.setGeometry(QtCore.QRect(self.xAd(40), self.yAd(40), self.xAd(300), self.yAd(300)))  # Set the geometry for placement and size
+        self.image_label.setGeometry(QtCore.QRect(self.xAd(40), self.yAd(20), self.xAd(75), self.yAd(75)))  # Set the geometry for placement and size
         self.image_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)  # Center align the image
         self.image_label.setObjectName("image_label")
         
         self.image_label = QLabel(self.centralwidget)
-        self.image_label.setGeometry(QtCore.QRect(self.xAd(40), self.yAd(40), self.xAd(500), self.yAd(500)))
+        self.image_label.setGeometry(QtCore.QRect(self.xAd(40), self.yAd(20), self.xAd(75), self.yAd(75)))
 
         # Line 2 (Vertical Line Divider)
         self.line_2 = QtWidgets.QFrame(parent=self.centralwidget)
-        self.line_2.setGeometry(QtCore.QRect(self.xAd(870), self.yAd(0), self.xAd(31), self.yAd(1101)))
+        self.line_2.setGeometry(QtCore.QRect(self.xAd(290), self.yAd(-20), self.xAd(31), self.yAd(1101)))
         self.line_2.setStyleSheet("color: rgb(255,255,255)")
         self.line_2.setLineWidth(10)
         self.line_2.setMidLineWidth(10)
@@ -120,16 +136,19 @@ class Ui_MainWindow(object):
 
         # Label above Chat Input
         self.label = QtWidgets.QLabel(parent=self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(self.xAd(290), self.yAd(940), self.xAd(171), self.yAd(51)))  # Adjust position as needed
+        self.label.setGeometry(QtCore.QRect(self.xAd(100), self.yAd(190), self.xAd(150), self.yAd(31)))
         self.label.setStyleSheet("color: rgb(160, 255, 166); font-size: 20px")
         self.label.setObjectName("label")
 
         # Chatbot Input (Text Entry Box)
         self.chatbotEnter = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.chatbotEnter.setGeometry(QtCore.QRect(self.xAd(40), self.yAd(1040), self.xAd(631), self.yAd(29)))  # Adjust position as needed
+        self.chatbotEnter.setGeometry(QtCore.QRect(self.xAd(10), self.yAd(230), self.xAd(271), self.yAd(29)))
         self.chatbotEnter.setStyleSheet("background-color: rgb(200,200,200)")
         self.chatbotEnter.setObjectName("chatbotEnter")
         self.chatbotEnter.editingFinished.connect(self.enterPress)
+        font = QtGui.QFont()
+        font.setPointSize(7)
+        self.chatbotEnter.setFont(font)
 
         # Fixed Chat Text Box (Read-only, Multi-line)
         self.chattext_box = QtWidgets.QTextEdit(parent=self.centralwidget)
@@ -138,41 +157,26 @@ class Ui_MainWindow(object):
         self.chattext_box.setReadOnly(True)  # Make it read-only so the user can't modify the text
         #self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
         self.chattext_box.setObjectName("chattext_box")
-        self.chattext_box.setGeometry(QtCore.QRect(self.xAd(30), self.yAd(500), self.xAd(811), self.yAd(531)))  # Adjust position as needed
+        self.chattext_box.setGeometry(QtCore.QRect(self.xAd(10), self.yAd(100), self.xAd(281), self.yAd(91)))  # Adjust position as needed
         self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
         #self.plainTextEdit.setObjectName("plainTextEdit")
 
 
         # Set fixed size for the text box to make it non-resizable
-        self.chattext_box.setFixedSize(self.xAd(811), self.yAd(531))  # Width = 811px, Height = 531px
+        self.chattext_box.setFixedSize(self.xAd(281), self.yAd(91))  # Width = 811px, Height = 531px
 
         
         
         # Push Button 1 (Action Button) with animations
         self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(self.xAd(1040), self.yAd(30), self.xAd(261), self.yAd(41)))  # Adjust position as needed
+        self.pushButton.setGeometry(QtCore.QRect(self.xAd(320), self.yAd(10), self.xAd(151), self.yAd(61)))
         self.pushButton.setAutoFillBackground(False)
-        self.pushButton.setStyleSheet("""
-            QPushButton {
-                color: rgb(160, 255, 166); 
-                border: 2px solid rgb(160, 255, 166);
-                border-radius: 5px; 
-                padding: 5px 10px;
-                background-color: rgb(30, 30, 30);  # Dark background to start
-            }
-            QPushButton:hover {
-                background-color: rgb(60, 60, 60);  # Lighter background on hover
-                border-color: rgb(255, 255, 255);  # Border color changes to white on hover
-                color: rgb(255, 255, 255);  # Text color changes to white
-            }
-            QPushButton:pressed {
-                background-color: rgb(50, 50, 50);  # Darker background on press
-                border-color: rgb(100, 255, 100);  # Border color changes to green on press
-                color: rgb(100, 255, 100);  # Text color changes to green on press
-            }
-        """)
+        self.pushButton.setStyleSheet("QPushButton { color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166); border-radius: 5px; padding: 5px 10px; background-color: rgb(30, 30, 30); } QPushButton:hover { background-color: rgb(60, 60, 60); border-color: rgb(255, 255, 255); color: rgb(255, 255, 255); } QPushButton:pressed { background-color: rgb(50, 50, 50); border-color: rgb(100, 255, 100); color: rgb(100, 255, 100); }")
         self.pushButton.setObjectName("pushButton")
-
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton.setFont(font)
+        self.pushButton.clicked.connect(self.button_1_pressed)
         # Create a QPropertyAnimation for scaling effect
         self.animation = QPropertyAnimation(self.pushButton, b"geometry")
         self.animation.setDuration(200)  # Duration of animation (in milliseconds)
@@ -182,15 +186,19 @@ class Ui_MainWindow(object):
 
         # Push Button 2 (Another Action Button)
         self.pushButton_2 = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(self.xAd(1040), self.yAd(130), self.xAd(261), self.yAd(41)))  # Adjust position as needed
+        self.pushButton_2.setGeometry(QtCore.QRect(self.xAd(310), self.yAd(90), self.xAd(161), self.yAd(41)))
         self.pushButton_2.setAutoFillBackground(False)
-        self.pushButton_2.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);"
-                                        "border-radius: 5px; padding: 5px 10px;")
+        self.pushButton_2.setStyleSheet("QPushButton { color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166); border-radius: 5px; padding: 5px 10px; background-color: rgb(30, 30, 30); } QPushButton:hover { background-color: rgb(60, 60, 60); border-color: rgb(255, 255, 255); color: rgb(255, 255, 255); } QPushButton:pressed { background-color: rgb(50, 50, 50); border-color: rgb(100, 255, 100); color: rgb(100, 255, 100); }")
         self.pushButton_2.setObjectName("pushButton_2")
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.pushButton_2.setFont(font)
+        self.pushButton_2.clicked.connect(self.button_2_pressed)
+
 
         # Menu Bar Setup
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(self.xAd(0), self.yAd(0), self.xAd(1464), self.yAd(30)))
+        self.menubar.setGeometry(QtCore.QRect(self.xAd(0), 0, self.xAd(480), self.yAd(30)))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
 
@@ -198,7 +206,9 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-
+        font = QtGui.QFont()
+        font.setPointSize(8)
+        self.chattext_box.setFont(font)
         
 
         # Finalizing Setup
@@ -218,9 +228,12 @@ class Ui_MainWindow(object):
         _translate = QCoreApplication.translate
         #Main.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "SPEAK TO ME"))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label.setFont(font)
 
         self.pushButton.setText(_translate("MainWindow", "Initiate Strategic Illumination"))
-        self.pushButton_2.setText(_translate("MainWindow", "Initiate Radio Control"))
+        self.pushButton_2.setText(_translate("MainWindow", "Initiate distance location"))
 
         """Setup the main window and layout."""
         #self.setWindowTitle("Image Animation Example")
@@ -309,7 +322,7 @@ class Ui_MainWindow(object):
         try:
             pixmap = QPixmap(self.talkimagePaths[self.current_frame])
             
-            pixmap = pixmap.scaled(self.xAd(500), self.yAd(500), QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+            pixmap = pixmap.scaled(self.xAd(75), self.yAd(75), QtCore.Qt.AspectRatioMode.KeepAspectRatio)
             
             if not pixmap.isNull():  # Check if the image was loaded successfully
                 self.image_label.setPixmap(pixmap)
@@ -336,7 +349,11 @@ class Ui_MainWindow(object):
         print("Animation completed 3 times. Switching to rest state.")
         # Here, you can set the final image or run any other code for the "rest state"
         # For example, set a final image as the rest state
-        final_pixmap = QPixmap(angry)  # Replace with actual path
+        
+        pixmap = QPixmap(angry)
+        pixmap = pixmap.scaled(self.xAd(75), self.yAd(75), QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        
+        final_pixmap = QPixmap(pixmap)  # Replace with actual path
         self.image_label.setPixmap(final_pixmap)
         """Reset animation if needed (for example, if you want to restart it)."""
         """Resets the animation so it can be restarted."""
@@ -371,7 +388,7 @@ def main():
     ui.setup_animation(MainWindow)
     #MainWindow.setWindowTitle("Chatbot Interface")
     #window = Ui_MainWindow()
-    MainWindow.setGeometry(100, 100, 600, 400)
+    MainWindow.setGeometry(0, 0, 480, 320)
     MainWindow.show()
 
     sys.exit(app.exec())
