@@ -1,6 +1,48 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QLabel, QFrame, QMenuBar, QStatusBar, QMainWindow
-from PyQt6.QtCore import QRect, QSize, Qt, QCoreApplication
+from PyQt6.QtCore import QRect, QSize, Qt, QCoreApplication,QThread, pyqtSignal, QTimer,QPushButton, QLineEdit
+import time
+import threading
+from PyQt6.QtGui import QPixmap
+
+imgFileBase = "static/images/"
+
+openTalk = "faceOpen.png"
+smileClosed = "faceSmile.png"
+sad = "sad.png"
+superHappy = "superHappy.png"
+supersad = "superSad.png"
+surprised = "surprise.png"
+angry = "faceAngry.png"
+
+
+
+class FlashingLightsWorker(QThread):
+    # Signal to communicate with the main thread (UI)
+    update_signal = pyqtSignal(str)
+
+    def __init__(self, hardware_api):
+        super().__init__()
+        self.hardware_api = hardware_api
+        #self.setup_external_control() #commented to avoid crash
+        self.running = True  # Control flag for the loop
+        
+    
+    def run(self):
+        """The loop that controls the lights on an external system (hardware or API)."""
+        while self.running:
+            self.toggle_lights()
+            time.sleep(1)  # Flash every second (adjust as needed)
+
+    def stop(self):
+        """Stop the background task."""
+        self.running = False
+
+    def toggle_lights(self):
+        """Toggle the lights and update the UI with the new state."""
+        state = self.hardware_api.toggle_lights()
+        state_text = "Lights ON" if state else "Lights OFF"
+        self.update_signal.emit(state_text)
 
 
 class mainWin(QMainWindow):
@@ -44,7 +86,7 @@ class mainWin(QMainWindow):
 
         self.statusbar = QStatusBar(parent=self)
         self.setStatusBar(self.statusbar)
-        self.setup_animation()
+        #self.setup_animation()
         
         # Create a QLineEdit (fixed text box)
         self.chattext_box = QLineEdit(self)
@@ -60,6 +102,22 @@ class mainWin(QMainWindow):
         
         # Retranslate UI
         self.retranslateUi()
+
+
+    #external GPIO control setup
+    def setup_external_control(self):
+        """Set up the external worker (background loop)"""
+        self.hardware_api = ExternalHardwareAPI()#will crash it for now
+        self.worker = FlashingLightsWorker(self.hardware_api)
+        self.worker.update_signal.connect(self.update_ui_from_worker)
+    
+    def update_ui_from_worker(self, status_text):
+        """Update the UI with the flashing light status."""
+        self.status_label.setText(status_text)
+
+    #self.worker.start() #start
+    #self.worker.stop() #stop
+
 
     def chatresponse(entered_text):
         response = f"Echo: {entered_text}"
@@ -114,11 +172,12 @@ class mainWin(QMainWindow):
         self.setCentralWidget(self.centralwidget)
         """Setup the image animation functionality."""
          # List of image paths for the animation
-        self.image_paths = [
-            "images/frame1.png",
-            "images/frame2.png",
-            "images/frame3.png",
-            "images/frame4.png"
+        self.talkimagePaths = [
+            smileClosed,
+            openTalk,
+            smileClosed,
+            openTalk,
+            smileClosed,
             # Add more images as needed
         ]
         
@@ -132,12 +191,12 @@ class mainWin(QMainWindow):
     def update_image(self):
         """Update the image on the QLabel."""
         # Load the current image
-        pixmap = QPixmap(self.image_paths[self.current_frame])
+        pixmap = QPixmap(self.talkimagePaths[self.current_frame])
         self.image_label.setPixmap(pixmap)
         
         # Update to the next image
         self.current_frame += 1
-        if self.current_frame >= len(self.image_paths):
+        if self.current_frame >= len(self.talkimagePaths):
             self.current_frame = 0  # Loop back to the first image
 
 def main():

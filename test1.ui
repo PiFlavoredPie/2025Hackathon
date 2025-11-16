@@ -20,7 +20,7 @@
    <widget class="Line" name="line_2">
     <property name="geometry">
      <rect>
-      <x>710</x>
+      <x>870</x>
       <y>0</y>
       <width>31</width>
       <height>1101</height>
@@ -44,7 +44,7 @@
      <rect>
       <x>40</x>
       <y>1040</y>
-      <width>631</width>
+      <width>791</width>
       <height>29</height>
      </rect>
     </property>
@@ -55,9 +55,9 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>940</y>
-      <width>171</width>
+      <x>390</x>
+      <y>960</y>
+      <width>111</width>
       <height>51</height>
      </rect>
     </property>
@@ -72,10 +72,96 @@
 text-size: 200px</string>
     </property>
     <property name="text">
-     <string>SPEAK TO ME</string>
+     <string>SPEAK TO ME:</string>
     </property>
     <property name="textFormat">
      <enum>Qt::PlainText</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>60</y>
+      <width>261</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(160, 255, 166);
+border: 2px solid rgb(160, 255, 166);  /* 2px thick black border */
+border-radius: 5px;          /* Optional: rounded corners */
+padding: 5px 10px;           /* Optional: internal padding */</string>
+    </property>
+    <property name="text">
+     <string>Initiate Strategic Illumination</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>120</y>
+      <width>261</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(160, 255, 166);
+border: 2px solid rgb(160, 255, 166);  /* 2px thick black border */
+border-radius: 5px;          /* Optional: rounded corners */
+padding: 5px 10px;           /* Optional: internal padding */</string>
+    </property>
+    <property name="text">
+     <string>Initiate Radio Control</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="plainTextEdit">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>390</y>
+      <width>811</width>
+      <height>531</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(160, 255, 166);
+border: 2px solid rgb(160, 255, 166);  /* 2px thick black border */
+border-radius: 5px;          /* Optional: rounded corners */
+padding: 5px 10px;           /* Optional: internal padding */</string>
+    </property>
+   </widget>
+   <widget class="Line" name="dot">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>170</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(160, 255, 166);
+background-color: rgb(160, 255, 166);</string>
+    </property>
+    <property name="lineWidth">
+     <number>10</number>
+    </property>
+    <property name="midLineWidth">
+     <number>10</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
     </property>
    </widget>
   </widget>
