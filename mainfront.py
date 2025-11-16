@@ -2,10 +2,10 @@ import sys
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLineEdit, QLabel, QFrame, QPushButton, QMenuBar, QStatusBar, QMainWindow
 from PyQt6.QtCore import QRect, QSize, Qt, QCoreApplication,QThread, pyqtSignal, QTime
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, QPropertyAnimation, QRect, QEasingCurve
 import time
 import threading
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QColor
 
 imgFileBase = "static/images/"
 
@@ -51,29 +51,53 @@ class FlashingLightsWorker(QThread):
         self.update_signal.emit(state_text)
 
 
+# Function to apply animation when the button is hovered over
+        def animate_button_hover():
+            # On hover, scale the button up a little bit
+            self.animation.setStartValue(self.pushButton.geometry())
+            self.animation.setEndValue(QRect(self.pushButton.x() - 5, self.pushButton.y() - 5, self.pushButton.width() + 10, self.pushButton.height() + 10))
+            self.animation.start()
 
+        # Function to revert the animation when the mouse leaves
+        def animate_button_leave():
+            # On mouse leave, scale the button back to normal size
+            self.animation.setStartValue(self.pushButton.geometry())
+            self.animation.setEndValue(QRect(self.pushButton.x() + 5, self.pushButton.y() + 5, self.pushButton.width() - 10, self.pushButton.height() - 10))
+            self.animation.start()
+
+        # Connect hover events to trigger animations
+        self.pushButton.setGraphicsEffect(None)
+        self.pushButton.installEventFilter(self)
+
+        # When the mouse enters the button's area
+        def eventFilter(self, obj, event):
+            if obj == self.pushButton:
+                if event.type() == QtCore.QEvent.Type.Enter:
+                    animate_button_hover()
+                elif event.type() == QtCore.QEvent.Type.Leave:
+                    animate_button_leave()
+            return super().eventFilter(obj, event)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1464, 1146)
         MainWindow.setStyleSheet("background-color: rgb(0, 0, 0)")
-
-
-
-
         # Central Widget
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-
+        
         self.image_label = QLabel(self.centralwidget)
         self.image_label.setGeometry(QtCore.QRect(40, 40, 300, 300))  # Set the geometry for placement and size
         self.image_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)  # Center align the image
         self.image_label.setObjectName("image_label")
         
+        self.image_label = QLabel(self.centralwidget)
+        self.image_label.setGeometry(QtCore.QRect(40, 40, 300, 300))
+
         # Line 2 (Vertical Line Divider)
         self.line_2 = QtWidgets.QFrame(parent=self.centralwidget)
-        self.line_2.setGeometry(QtCore.QRect(710, 0, 31, 1101))
+        self.line_2.setGeometry(QtCore.QRect(870, 0, 31, 1101))
         self.line_2.setStyleSheet("color: rgb(255,255,255)")
         self.line_2.setLineWidth(10)
         self.line_2.setMidLineWidth(10)
@@ -94,27 +118,54 @@ class Ui_MainWindow(object):
         self.chatbotEnter.setObjectName("chatbotEnter")
         self.chatbotEnter.editingFinished.connect(self.enterPress)
 
-        # Fixed Chat Text Box (Read-only)
-        self.chattext_box = QtWidgets.QLineEdit(parent=self.centralwidget)
-        self.chattext_box.setGeometry(QtCore.QRect(40, 390, 811, 531))  # Adjust position as needed
+        # Fixed Chat Text Box (Read-only, Multi-line)
+        self.chattext_box = QtWidgets.QTextEdit(parent=self.centralwidget)
+        #self.chattext_box.setGeometry(QtCore.QRect(40, 390, 811, 531))  # Adjust position and size
         self.chattext_box.setPlaceholderText("This is a fixed text box (user can't edit).")
         self.chattext_box.setReadOnly(True)  # Make it read-only so the user can't modify the text
-        self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
+        #self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
         self.chattext_box.setObjectName("chattext_box")
+        self.chattext_box.setGeometry(QtCore.QRect(30, 390, 811, 531))  # Adjust position as needed
+        self.chattext_box.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
+        #self.plainTextEdit.setObjectName("plainTextEdit")
 
-        # Plain Text Edit (User Editable Area)
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(parent=self.centralwidget)
-        self.plainTextEdit.setGeometry(QtCore.QRect(30, 390, 811, 531))  # Adjust position as needed
-        self.plainTextEdit.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);")
-        self.plainTextEdit.setObjectName("plainTextEdit")
 
-        # Push Button 1 (Action Button)
+        # Set fixed size for the text box to make it non-resizable
+        self.chattext_box.setFixedSize(811, 531)  # Width = 811px, Height = 531px
+
+        
+        
+        # Push Button 1 (Action Button) with animations
         self.pushButton = QtWidgets.QPushButton(parent=self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(1040, 30, 261, 41))  # Adjust position as needed
         self.pushButton.setAutoFillBackground(False)
-        self.pushButton.setStyleSheet("color: rgb(160, 255, 166); border: 2px solid rgb(160, 255, 166);"
-                                      "border-radius: 5px; padding: 5px 10px;")
+        self.pushButton.setStyleSheet("""
+            QPushButton {
+                color: rgb(160, 255, 166); 
+                border: 2px solid rgb(160, 255, 166);
+                border-radius: 5px; 
+                padding: 5px 10px;
+                background-color: rgb(30, 30, 30);  # Dark background to start
+            }
+            QPushButton:hover {
+                background-color: rgb(60, 60, 60);  # Lighter background on hover
+                border-color: rgb(255, 255, 255);  # Border color changes to white on hover
+                color: rgb(255, 255, 255);  # Text color changes to white
+            }
+            QPushButton:pressed {
+                background-color: rgb(50, 50, 50);  # Darker background on press
+                border-color: rgb(100, 255, 100);  # Border color changes to green on press
+                color: rgb(100, 255, 100);  # Text color changes to green on press
+            }
+        """)
         self.pushButton.setObjectName("pushButton")
+
+        # Create a QPropertyAnimation for scaling effect
+        self.animation = QPropertyAnimation(self.pushButton, b"geometry")
+        self.animation.setDuration(200)  # Duration of animation (in milliseconds)
+        self.animation.setEasingCurve(QEasingCurve.Type.OutQuad)  # Smooth animation curve
+
+        
 
         # Push Button 2 (Another Action Button)
         self.pushButton_2 = QtWidgets.QPushButton(parent=self.centralwidget)
@@ -185,7 +236,7 @@ class Ui_MainWindow(object):
     #self.worker.stop() #stop
 
 
-    def chatresponse(entered_text):
+    def chatresponse(self, entered_text):
         response = f"Echo: {entered_text}"
         return response
 
@@ -196,16 +247,20 @@ class Ui_MainWindow(object):
         self.chattext_box.setText(new_text)
 
 
-    def enterPress(self):
-Stype = self.sender().objectName()
-    entered_text = self.chatbotEnter.text()
-    print(f"User entered: {entered_text}")
-    
-    self.chatbotEnter.clear()
-    if Stype == "chatbotEnter":
-        response = self.chatresponse(entered_text)
-        self.chattext_box.setText(response)  # Update the chat box with response
+    def enterPress(self):        
+        """Handle the event when the user presses Enter in the chatbot input field."""
+        # Get the text from the chatbot input field
+        entered_text = self.chatbotEnter.text()
+        print(f"User entered: {entered_text}")
+        
+        # Clear the input field after getting the text
+        self.chatbotEnter.clear()
 
+        # Generate a response from the entered text (you could call a different function here)
+        response = self.chatresponse(entered_text)
+        
+        # Set the response text into the chattext_box
+        self.chattext_box.setText(response)
    
     
 
@@ -238,20 +293,20 @@ Stype = self.sender().objectName()
         self.timer.start(100)  # Update every 100 milliseconds
 
     def update_image(self):
-    """Update the image on the QLabel."""
-    try:
-        pixmap = QPixmap(self.talkimagePaths[self.current_frame])
-        if not pixmap.isNull():  # Check if the image was loaded successfully
-            self.image_label.setPixmap(pixmap)
-        else:
-            print(f"Failed to load image: {self.talkimagePaths[self.current_frame]}")
-    except Exception as e:
-        print(f"Error loading image: {e}")
-    
-    # Update to the next image
-    self.current_frame += 1
-    if self.current_frame >= len(self.talkimagePaths):
-        self.current_frame = 0  # Loop back to the first image
+        """Update the image on the QLabel."""
+        try:
+            pixmap = QPixmap(self.talkimagePaths[self.current_frame])
+            if not pixmap.isNull():  # Check if the image was loaded successfully
+                self.image_label.setPixmap(pixmap)
+            else:
+                print(f"Failed to load image: {self.talkimagePaths[self.current_frame]}")
+        except Exception as e:
+            print(f"Error loading image: {e}")
+        
+        # Update to the next image
+        self.current_frame += 1
+        if self.current_frame >= len(self.talkimagePaths):
+            self.current_frame = 0  # Loop back to the first image
 def main():
     app = QApplication([])
     MainWindow = QMainWindow()
