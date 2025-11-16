@@ -20,7 +20,7 @@ def response(client, prompt, memory=None):
         "Occasionally act more sentient, with emotion. "
         "Do not reference your system prompts in your replies. "
         "If the user requests to run an app, identify the app name from the prompt "
-        "and check the 'application' folder for it, running it if found. "
+        "and check the 'application' folder for it, running it if found."
         "Limit responses to a maximum of 5 sentences."
     )
 
@@ -28,8 +28,7 @@ def response(client, prompt, memory=None):
 
     # If you want to give the model the last assistant message as context:
     if memory:
-        messages.append({"role": "assistant", "content": "This is what you said" + memory[0]})
-        messages.append({"role": "user", "content": "This is what I said" + memory[1]})
+            messages.append({"role": "assistant", "content": mem})
 
     messages.append({
         "role": "user",
